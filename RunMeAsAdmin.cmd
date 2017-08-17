@@ -1,63 +1,64 @@
 @echo off
-
+::===================
 :: Set Title of the script
-title KMS_ACTIVATOR "Dsup"
-
+title KMS_VL_ALL_6.9_beta_3
+::===================
 :: Get Fully Qualified FileName of the script
-set _FilePath=%~f0
-
+set "_FileName=%~f0"
+::===================
 :: Get Drive and Path containing the script
-set _FileDir=%~dp0
-
+set "_FileDir=%~dp0"
+::===================
 :: Set Task Name for the script
-set _TaskName=KMS_VL_ALL
-
+set "_TaskName=KMS_VL_ALL"
+::===================
 :: Enable Extensions and DelayedExpansion of variables
 setlocal EnableExtensions EnableDelayedExpansion
 ::============================================================================================================================================================
 :: Can be 0 (Online Mode - Used for External KMS Server) | 1 (Offline Mode - Used for Internal KMS Server)
 set /a _OfflineMode=1
-
+::===================
 :: Can be 0 (Delete Auto-Renewal Task OR Manual Mode) | 1 (Create Auto-Renewal Task)
 set /a _Task=1
-
+::===================
 :: Can be ONSTART | ONLOGON | MINUTE(1 - 1439) | HOURLY(1 - 23) | DAILY(1 - 365) | WEEKLY(1 - 52) | MONTHLY(1 - 12)
-set _TaskFrequency=ONLOGON
-
+set "_TaskFrequency=ONLOGON"
 :: Can be numbers in the range shown above
-set _Modifier=1
+set /a _TaskModifier=1
 ::============================================================================================================================================================
 :: Set Parameters for KMS Server
-
-:: Can be Custom ePID; Change '_RandomLevel' value to 0 to enable Custom value
-set "_WindowsEPID=03612-00206-471-452343-03-1033-14393.0000-2852016"
-
-:: Can be Custom ePID; Change '_RandomLevel' value to 0 to enable Custom value
-set "_Office2010EPID=03612-00096-199-303490-03-1033-14393.0000-2852016"
-
-:: Can be Custom ePID; Change '_RandomLevel' value to 0 to enable Custom value
-set "_Office2013EPID=03612-00206-234-394838-03-1033-14393.0000-2852016"
-
-:: Can be Custom ePID; Change '_RandomLevel' value to 0 to enable Custom value
-set "_Office2016EPID=03612-00206-437-938923-03-1033-14393.0000-2852016"
-
+::===================
+:: Custom Windows ePID; Change '_RandomLevel' value to 0 to enable Custom value
+set "_WindowsEPID=03612-00206-471-452343-03-1033-14393.0000-1082017"
+:: Custom Windows 10 Enterprise G/GN ePID; Change '_RandomLevel' value to 0 to enable Custom value
+set "_WindowsGEPID=03612-00206-471-452343-03-1033-14393.0000-1082017"
+::===================
+:: Custom Office 2010 ePID; Change '_RandomLevel' value to 0 to enable Custom value
+set "_Office2010EPID=03612-00096-199-303490-03-1033-14393.0000-1082017"
+::===================
+:: Custom Office 2013 ePID; Change '_RandomLevel' value to 0 to enable Custom value
+set "_Office2013EPID=03612-00206-234-394838-03-1033-14393.0000-1082017"
+::===================
+:: Custom Office 2016 ePID; Change '_RandomLevel' value to 0 to enable Custom value
+set "_Office2016EPID=03612-00206-437-938923-03-1033-14393.0000-1082017"
+::===================
 :: Can be Custom HardwareID obtained from a Real KMS Server Host
 set "_HardwareID=3A1C049600B60076"
-
+::===================
 :: Can be 0 (UserDefined-Custom ePIDs) | 1 (Randomized ePIDs for every Session) | 2 (Randomized ePIDs for every Request)
-set /a _RandomLevel=0
-
+set /a _RandomLevel=1
+::===================
 :: Can be (15 to 43200) minutes; Default - 2 hours, Maximum - 30 days
 set /a _KMSActivationInterval=120
-
+::===================
 :: Can be (15 to 43200) minutes; Default - 7 days, Maximum - 30 days
 set /a _KMSRenewalInterval=10080
 ::============================================================================================================================================================
 :: Set Parameters for KMS Client
-
+::===================
 :: Can be (0-255.0-255.0-255.0-255), but NOT 127.x.x.x/Localhost IPs - Strongly Recommend to leave it as is [Offline Mode]; KMS Server Name/IP [Online Mode]
-set "_KMSHost=10.0.0.2"
-
+set "_KMSHost=172.16.0.4"
+::===================
 :: Can be (1 to 65535); Strongly Recommend to leave it as is [Offline Mode]; Since we clear Port value after each run, it resets to 1688 [Online Mode]
 set /a _KMSPort=1686
 ::============================================================================================================================================================
@@ -70,18 +71,17 @@ set "_huSPP=HKEY_USERS\S-1-5-20\Software\Microsoft\Windows NT\CurrentVersion\Sof
 set "_hkOSPP=HKLM\SOFTWARE\Microsoft\OfficeSoftwareProtectionPlatform"
 ::============================================================================================================================================================
 :: Set KMS Genuine Ticket Validation Parameters
-
+::===================
 :: Can be 0 (Enable Genuine Ticket) | 1 (Disable Genuine Ticket)
 set /a _KMSNoGenTicket=1
-
+::===================
 :: Registry Keys for setting value
-set "_KMSGenuineKey1=HKLM\SOFTWARE\Policies\Microsoft\Windows NT\CurrentVersion\Software Protection Platform"
-set "_KMSGenuineKey2=HKLM\SOFTWARE\Classes\AppID\slui.exe"
+set "_KMSGenuineKey=HKLM\SOFTWARE\Policies\Microsoft\Windows NT\CurrentVersion\Software Protection Platform"
 ::============================================================================================================================================================
 :: Get Administrator Rights
 fltmc >nul 2>&1 || (
     echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\GetAdmin.vbs"
-    echo UAC.ShellExecute "!_FilePath!", "", "", "runas", 1 >> "%temp%\GetAdmin.vbs"
+    echo UAC.ShellExecute "!_FileName!", "", "", "runas", 1 >> "%temp%\GetAdmin.vbs"
     cmd /u /c type "%temp%\GetAdmin.vbs">"%temp%\GetAdminUnicode.vbs"
     cscript //nologo "%temp%\GetAdminUnicode.vbs"
     del /f /q "%temp%\GetAdmin.vbs" >nul 2>&1
@@ -91,24 +91,24 @@ fltmc >nul 2>&1 || (
 ::============================================================================================================================================================
 :: Go to the Path of the Script
 pushd "!_FileDir!"
-
+::===================
 :: Check if [Office 2010 on Windows XP SP3 or Later] OR [Office 2013 or Later on Windows 7 / Server 2008 R2] is Installed
 wmic path OfficeSoftwareProtectionService get Version >nul 2>&1 && (
     set /a _OSPS=1
 ) || (
     set /a _OSPS=0
 )
-
+::===================
 :: Check if Office 2016 products are ACTUALLY installed
 set /a _Office16=0
-for /f "tokens=2*" %%a in ('"reg query HKLM\SOFTWARE\Microsoft\Office\16.0\Common\InstallRoot /v Path" 2^>nul') do (
-    set "_msi16=%%b"
+for /f "tokens=2*" %%G in ('"reg query HKLM\SOFTWARE\Microsoft\Office\16.0\Common\InstallRoot /v Path" 2^>nul') do (
+    set "_msi16=%%H"
 )
-for /f "tokens=2*" %%a in ('"reg query HKLM\SOFTWARE\Wow6432Node\Microsoft\Office\16.0\Common\InstallRoot /v Path" 2^>nul') do (
-    set "_msi16wow=%%b"
+for /f "tokens=2*" %%G in ('"reg query HKLM\SOFTWARE\Wow6432Node\Microsoft\Office\16.0\Common\InstallRoot /v Path" 2^>nul') do (
+    set "_msi16wow=%%H"
 )
-for /f "tokens=2*" %%a in ('"reg query HKLM\SOFTWARE\Microsoft\Office\ClickToRun /v InstallPath" 2^>nul') do (
-    set "_ctr16=%%b\Office16"
+for /f "tokens=2*" %%G in ('"reg query HKLM\SOFTWARE\Microsoft\Office\ClickToRun /v InstallPath" 2^>nul') do (
+    set "_ctr16=%%H\Office16"
 )
 if exist "%_msi16%\OSPP.VBS" (
     set /a _Office16=1
@@ -116,22 +116,22 @@ if exist "%_msi16%\OSPP.VBS" (
     set /a _Office16=1
 ) else if exist "%_ctr16%\OSPP.VBS" (
     set /a _Office16=1
-) else if exist "C:\Program Files\Microsoft Office\Office16\OSPP.VBS" (
+) else if exist "%ProgramFiles%\Microsoft Office\Office16\OSPP.VBS" (
     set /a _Office16=1
-) else if exist "C:\Program Files (x86)\Microsoft Office\Office16\OSPP.VBS" (
+) else if exist "%ProgramFiles(x86)%\Microsoft Office\Office16\OSPP.VBS" (
     set /a _Office16=1
 )
-
+::===================
 :: Check if Office 2013 products are ACTUALLY installed
 set /a _Office15=0
-for /f "tokens=2*" %%a in ('"reg query HKLM\SOFTWARE\Microsoft\Office\15.0\Common\InstallRoot /v Path" 2^>nul') do (
-    set "_msi15=%%b"
+for /f "tokens=2*" %%G in ('"reg query HKLM\SOFTWARE\Microsoft\Office\15.0\Common\InstallRoot /v Path" 2^>nul') do (
+    set "_msi15=%%H"
 )
-for /f "tokens=2*" %%a in ('"reg query HKLM\SOFTWARE\Wow6432Node\Microsoft\Office\15.0\Common\InstallRoot /v Path" 2^>nul') do (
-    set "_msi15wow=%%b"
+for /f "tokens=2*" %%G in ('"reg query HKLM\SOFTWARE\Wow6432Node\Microsoft\Office\15.0\Common\InstallRoot /v Path" 2^>nul') do (
+    set "_msi15wow=%%H"
 )
-for /f "tokens=2*" %%a in ('"reg query HKLM\SOFTWARE\Microsoft\Office\ClickToRun /v InstallPath" 2^>nul') do (
-    set "_ctr15=%%b\Office15"
+for /f "tokens=2*" %%G in ('"reg query HKLM\SOFTWARE\Microsoft\Office\ClickToRun /v InstallPath" 2^>nul') do (
+    set "_ctr15=%%H\Office15"
 )
 if exist "%_msi15%\OSPP.VBS" (
     set /a _Office15=1
@@ -139,22 +139,22 @@ if exist "%_msi15%\OSPP.VBS" (
     set /a _Office15=1
 ) else if exist "%_ctr15%\OSPP.VBS" (
     set /a _Office15=1
-) else if exist "C:\Program Files\Microsoft Office\Office15\OSPP.VBS" (
+) else if exist "%ProgramFiles%\Microsoft Office\Office15\OSPP.VBS" (
     set /a _Office15=1
-) else if exist "C:\Program Files (x86)\Microsoft Office\Office15\OSPP.VBS" (
+) else if exist "%ProgramFiles(x86)%\Microsoft Office\Office15\OSPP.VBS" (
     set /a _Office15=1
 )
-
+::===================
 :: Check if Office 2010 products are ACTUALLY installed
 set /a _Office14=0
-for /f "tokens=2*" %%a in ('"reg query HKLM\SOFTWARE\Microsoft\Office\14.0\Common\InstallRoot /v Path" 2^>nul') do (
-    set "_msi14=%%b"
+for /f "tokens=2*" %%G in ('"reg query HKLM\SOFTWARE\Microsoft\Office\14.0\Common\InstallRoot /v Path" 2^>nul') do (
+    set "_msi14=%%H"
 )
-for /f "tokens=2*" %%a in ('"reg query HKLM\SOFTWARE\Wow6432Node\Microsoft\Office\14.0\Common\InstallRoot /v Path" 2^>nul') do (
-    set "_msi14wow=%%b"
+for /f "tokens=2*" %%G in ('"reg query HKLM\SOFTWARE\Wow6432Node\Microsoft\Office\14.0\Common\InstallRoot /v Path" 2^>nul') do (
+    set "_msi14wow=%%H"
 )
-for /f "tokens=2*" %%a in ('"reg query HKLM\SOFTWARE\Microsoft\Office\ClickToRun /v InstallPath" 2^>nul') do (
-    set "_ctr14=%%b\Office14"
+for /f "tokens=2*" %%G in ('"reg query HKLM\SOFTWARE\Microsoft\Office\ClickToRun /v InstallPath" 2^>nul') do (
+    set "_ctr14=%%H\Office14"
 )
 if exist "%_msi14%\OSPP.VBS" (
     set /a _Office14=1
@@ -162,34 +162,102 @@ if exist "%_msi14%\OSPP.VBS" (
     set /a _Office14=1
 ) else if exist "%_ctr14%\OSPP.VBS" (
     set /a _Office14=1
-) else if exist "C:\Program Files\Microsoft Office\Office14\OSPP.VBS" (
+) else if exist "%ProgramFiles%\Microsoft Office\Office14\OSPP.VBS" (
     set /a _Office14=1
-) else if exist "C:\Program Files (x86)\Microsoft Office\Office14\OSPP.VBS" (
+) else if exist "%ProgramFiles(x86)%\Microsoft Office\Office14\OSPP.VBS" (
     set /a _Office14=1
 )
-
+::===================
 :: Get Architecture of the OS installed; OS Locale/Language Independent from Windows XP / Server 2003 and Later
-for /f "tokens=2 delims==" %%a in ('wmic path Win32_Processor get AddressWidth /value') do (
-    set _OSarch=%%a-bit
+for /f "tokens=2 delims==" %%G in ('wmic path Win32_Processor get AddressWidth /value') do (
+    set _OSarch=%%G-bit
 )
-
-:: Get Windows OS Current Edition
-for /f "tokens=3 delims=: " %%a in ('dism /Online /Get-CurrentEdition /English ^| findstr /i "Current Edition :"') do (
-    set _EditionID=%%a
+::===================
+:: Visual Studio 2013(v12) Ultimate Activation
+if %_OSarch% EQU 64-bit (
+    for /f "skip=2 tokens=2*" %%G in ('"reg query HKLM\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\12.0 /v InstallDir" 2^>nul') do (
+        set "_VS12=%%H"
+    )
+) else (
+    for /f "skip=2 tokens=2*" %%G in ('"reg query HKLM\SOFTWARE\Microsoft\VisualStudio\12.0 /v InstallDir" 2^>nul') do (
+        set "_VS12=%%H"
+    )
 )
-
-:: Get Windows OS version information and goto Respective Function
-for /f "tokens=2 delims==" %%a in ('wmic path Win32_OperatingSystem get BuildNumber /value') do (
-    set /a _WinBuild=%%a
+if exist "%_VS12%\StorePID.exe" (
+    start "" /b "%_VS12%\StorePID.exe" 87DQC-G8CYR-CRPJ4-QX9K8-RFV2B 06181
+    if %ERRORLEVEL% EQU 0 (
+        echo Visual Studio 2013 Ultimate activated successfully
+        echo.
+    )
 )
+::===================
+:: Visual Studio 2015(v14) Enterprise Activation
+if %_OSarch% EQU 64-bit (
+    for /f "skip=2 tokens=2*" %%G in ('"reg query HKLM\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\14.0 /v InstallDir" 2^>nul') do (
+        set "_VS14=%%H"
+    )
+) else (
+    for /f "skip=2 tokens=2*" %%G in ('"reg query HKLM\SOFTWARE\Microsoft\VisualStudio\14.0 /v InstallDir" 2^>nul') do (
+        set "_VS14=%%H"
+    )
+)
+if exist "%_VS14%\StorePID.exe" (
+    start "" /b "%_VS14%\StorePID.exe" HM6NR-QXX7C-DFW2Y-8B82K-WTYJV 07060
+    if %ERRORLEVEL% EQU 0 (
+        echo Visual Studio 2015 Enterprise activated successfully
+        echo.
+    )
+)
+::===================
+:: Visual Studio 2017(v15) Enterprise Activation
+if %_OSarch% EQU 64-bit (
+    for /f "skip=2 tokens=2*" %%G in ('"reg query HKLM\SOFTWARE\WOW6432Node\Microsoft\VisualStudio\SxS\VS7 /v 15.0" 2^>nul') do (
+        set "_VS15=%%HCommon7\IDE"
+    )
+) else (
+    for /f "skip=2 tokens=2*" %%G in ('"reg query HKLM\SOFTWARE\Microsoft\VisualStudio\SxS\VS7 /v 15.0" 2^>nul') do (
+        set "_VS15=%%HCommon7\IDE"
+    )
+)
+if exist "%_VS15%\StorePID.exe" (
+    start "" /b "%_VS15%\StorePID.exe" NJVYC-BMHX2-G77MM-4XJMR-6Q8QF 08860
+    if %ERRORLEVEL% EQU 0 (
+        echo Visual Studio 2017 Enterprise activated successfully
+        echo.
+    )
+)
+::===================
+:: Get Windows OS build number
+for /f "tokens=2 delims==" %%G in ('wmic path Win32_OperatingSystem get BuildNumber /value') do (
+    set /a _WinBuild=%%G
+)
+::===================
+:: Get Windows License Status for Vista or above AND Installed Windows Edition
+if %_WinBuild% GEQ 6000 (
+    if %_WinBuild% GEQ 9200 (
+        for /f "tokens=3 delims=: " %%G in ('dism /Online /Get-CurrentEdition /English ^| findstr /i "Current Edition :"') do (
+            set "_Edition=%%G"
+        )
+    ) else (
+        for /f "tokens=2 delims== " %%G in ('"wmic path SoftwareLicensingProduct where (PartialProductKey is not NULL) get LicenseStatus /value" 2^>nul') do (
+            set /a _LicenseStatus=%%G
+        )
+        for /f "tokens=3 delims= " %%G in ('"wmic path SoftwareLicensingProduct where LicenseStatus='%_LicenseStatus%' get Name" 2^>nul') do (
+            set "_Edition=%%G"
+        )
+    )
+)
+::===================
+:: Goto Main blocks according to Windows BuildNumber
 if %_WinBuild% GEQ 9600 (
-    echo Program Started...Please Wait...
+    REM NO parenthesis or brackets in echo messages
+    echo Operating System: Windows 8.1 or Above
     goto :Win8.1AndLater
 ) else if %_WinBuild% GEQ 2600 (
-    echo Program Started...Please Wait...
+    echo Operating System: Windows 8 or Below
     goto :Win8AndBelow
 ) else (
-    echo This Activator is NOT supported on this OS.
+    echo KMS_VL_ALL is NOT supported on this OS.
     echo Press any key to exit...
     pause >nul
     exit
@@ -199,22 +267,30 @@ if %_WinBuild% GEQ 9600 (
 :: Create/Delete Auto-Renewal Task based on parameter; Windows XP SP3 or Later Compatible
 if %_Task% EQU 1 (
     schtasks /query /fo list 2>nul | findstr /i "%_TaskName%" >nul 2>&1 && (
-      schtasks /delete /tn "%_TaskName%" /f >nul 2>&1
+        schtasks /delete /tn "%_TaskName%" /f >nul 2>&1
     )
-    for /d %%a in (ONSTART,ONLOGON) do (
-      if /i %_TaskFrequency% EQU %%a (
-        schtasks /create /tn "%_TaskName%" /ru "SYSTEM" /sc "%_TaskFrequency%" /tr "!_FilePath!" >nul 2>&1 && (echo.&echo Auto-Renewal Task is Created.)
-      ) else (
-        schtasks /create /tn "%_TaskName%" /ru "SYSTEM" /sc "%_TaskFrequency%" /mo "%_Modifier%" /tr "!_FilePath!" >nul 2>&1 && (echo.&echo Auto-Renewal Task is Created.)
-      )
+    if /i %_TaskFrequency% EQU ONSTART (
+        schtasks /create /tn "%_TaskName%" /ru "SYSTEM" /sc "%_TaskFrequency%" /tr "!_FileName!" >nul 2>&1 && (
+            echo.
+            echo Auto-Renewal Task is Created.
+        )
+    ) else if /i %_TaskFrequency% EQU ONLOGON (
+        schtasks /create /tn "%_TaskName%" /ru "SYSTEM" /sc "%_TaskFrequency%" /tr "!_FileName!" >nul 2>&1 && (
+            echo.
+            echo Auto-Renewal Task is Created.
+        )
+    ) else (
+        schtasks /create /tn "%_TaskName%" /ru "SYSTEM" /sc "%_TaskFrequency%" /mo "%_TaskModifier%" /tr "!_FileName!" >nul 2>&1 && (
+            echo.
+            echo Auto-Renewal Task is Created.
+        )
     )
-)
-if %_Task% NEQ 1 (
+) else (
     schtasks /query /fo list 2>nul | findstr /i "%_TaskName%" >nul 2>&1 && (
-      schtasks /delete /tn "%_TaskName%" /f >nul 2>&1
-      echo.
-      echo Auto-Renewal Task is Deleted.
-      )
+        schtasks /delete /tn "%_TaskName%" /f >nul 2>&1
+        echo.
+        echo Auto-Renewal Task is Deleted.
+    )
 )
 echo.
 echo Closing in 5 Seconds...
@@ -243,15 +319,17 @@ if %_OfflineMode% EQU 1 (
     call :AddFirewallRule
     call :StartKMS
 )
-
+::===================
+:: Enable/Disable KMS Genuine Ticket Validation for Windows 8.1 and above
+if %_WinBuild% GEQ 9600 (
+    call :KMSGenuineTicket
+)
+::===================
 :: Call Windows and Office Activation Main Functions
 call :SLSActivation
 if %_OSPS% NEQ 0 (
     call :OSPSActivation
 )
-:: Enable/Disable KMS Genuine Ticket Validation
-call :KMSGenuineTicket
-
 if %_OfflineMode% EQU 1 (
     REM Stop KMS Server and Remove Firewall Exceptions for VLMCSD
     call :StopKMS
@@ -287,7 +365,7 @@ if %_OSPS% EQU 0 (
         call :Close
     )
 )
-
+::===================
 if %_OfflineMode% EQU 1 (
     REM Localhost IP can be used for Windows 8 and Below
     set "_KMSHost=127.0.0.2"
@@ -296,7 +374,7 @@ if %_OfflineMode% EQU 1 (
     call :AddFirewallRule
     call :StartKMS
 )
-
+::===================
 :: Call Windows and Office Activation Main Functions
 if %_WinBuild% GEQ 6000 (
     call :SLSActivation
@@ -304,7 +382,7 @@ if %_WinBuild% GEQ 6000 (
 if %_OSPS% NEQ 0 (
     call :OSPSActivation
 )
-
+::===================
 if %_OfflineMode% EQU 1 (
     REM Stop KMS Server and Remove Firewall Exceptions for VLMCSD
     call :StopKMS
@@ -326,11 +404,11 @@ exit /b
 :StartKMS
 :: Start VLMCSD KMS Server
 if %_RandomLevel% EQU 0 (
-    start "" /b "!_FileDir!32-bit\vlmcsd.exe" -P%_KMSPort% -0%_Office2010EPID% -3%_Office2013EPID% -6%_Office2016EPID% -w%_WindowsEPID% -H%_HardwareID% -R%_KMSRenewalInterval% -A%_KMSActivationInterval% -T0 -e >nul 2>&1
+    start "" /b "!_FileDir!32-bit\vlmcsd.exe" -P %_KMSPort% -0 %_Office2010EPID% -3 %_Office2013EPID% -6 %_Office2016EPID% -w %_WindowsEPID% -G %_WindowsGEPID% -H %_HardwareID% -R %_KMSRenewalInterval% -A %_KMSActivationInterval% -T0 -e >nul 2>&1
 ) else (
-    start "" /b "!_FileDir!32-bit\vlmcsd.exe" -r%_RandomLevel% -P%_KMSPort% -H%_HardwareID% -R%_KMSRenewalInterval% -A%_KMSActivationInterval% -T0 -e >nul 2>&1
+    start "" /b "!_FileDir!32-bit\vlmcsd.exe" -r %_RandomLevel% -P %_KMSPort% -H %_HardwareID% -R %_KMSRenewalInterval% -A %_KMSActivationInterval% -T0 -e >nul 2>&1
 )
-
+::===================
 :: Mind boggling BUG Fix; Windows Vista or below takes some time to start KMS Server which prevents Activation; So add delay for it to successfully start
 if %_WinBuild% LSS 7600 (
     ping 127.0.0.1 -n 12 >nul 2>&1
@@ -344,8 +422,7 @@ exit /b
 ::============================================================================================================================================================
 :KMSGenuineTicket
 :: Enable/Disable KMS Genuine Ticket Validation registry keys based on user parameter
-reg add "%_KMSGenuineKey1%" /v NoGenTicket /t REG_DWORD /d %_KMSNoGenTicket% /f >nul 2>&1
-reg add "%_KMSGenuineKey2%" /v NoGenTicket /t REG_DWORD /d %_KMSNoGenTicket% /f >nul 2>&1
+reg add "%_KMSGenuineKey%" /v NoGenTicket /t REG_DWORD /d %_KMSNoGenTicket% /f >nul 2>&1
 exit /b
 ::============================================================================================================================================================
 :CreateIFEOEntry
@@ -360,8 +437,8 @@ if '%~1' NEQ 'osppsvc.exe' (
     reg delete "%_regKey%\%~1" /f >nul 2>&1
 )
 if '%~1' EQU 'osppsvc.exe' (
-    reg delete "%_regKey%\osppsvc.exe" /f /v "Debugger" >nul 2>&1
-    reg delete "%_regKey%\osppsvc.exe" /f /v "KMS_Emulation" >nul 2>&1
+    reg delete "%_regKey%\%~1" /f /v "Debugger" >nul 2>&1
+    reg delete "%_regKey%\%~1" /f /v "KMS_Emulation" >nul 2>&1
 )
 exit /b
 ::============================================================================================================================================================
@@ -376,11 +453,11 @@ sc query "%1" | findstr /i "STOPPED" >nul 2>&1 || (
 exit /b
 ::============================================================================================================================================================
 :SLSActivation
-reg delete %_hkSPP%\55c92734-d682-4d71-983e-d6ec3f16059f /f >nul 2>&1
-reg delete %_hkSPP%\0ff1ce15-a989-479d-af46-f275c6370663 /f >nul 2>&1
+reg delete "%_hkSPP%\55c92734-d682-4d71-983e-d6ec3f16059f" /f >nul 2>&1
+reg delete "%_hkSPP%\0ff1ce15-a989-479d-af46-f275c6370663" /f >nul 2>&1
 set _spp=SoftwareLicensingProduct
 set _sps=SoftwareLicensingService
-
+::===================
 :: Detect if Office 2013 [Volume Licensed] or Later is Installed
 wmic path %_spp% where (Description like '%%KMSCLIENT%%') get Name /value 2>nul | findstr /i "Office" >nul 2>&1 && (
     set /a _OfficeVL=1
@@ -391,7 +468,7 @@ wmic path %_spp% where (Description like '%%KMSCLIENT%%') get Name /value 2>nul 
         echo No Office 2013 or Later VL Product Detected; Retail Versions need to be converted to VL first.
     )
 )
-
+::===================
 :: Detect if installed Windows supports KMS Activation
 wmic path %_spp% where (Description like '%%KMSCLIENT%%') get Name /value 2>nul | findstr /i "Windows" >nul 2>&1 || (
     echo.
@@ -400,19 +477,28 @@ wmic path %_spp% where (Description like '%%KMSCLIENT%%') get Name /value 2>nul 
         exit /b
     )
 )
-
+::===================
+:: Check if GVLK is installed for Windows
+wmic path %_spp% where (Description like '%%KMSCLIENT%%' and PartialProductKey is not NULL) get Name /value 2>nul | findstr /i "Windows" 1>nul && (
+    set /a _WindowsGVLK=1
+) || (
+    set /a _WindowsGVLK=0
+)
+::===================
 :: Call Common Core Activation Routines
 call :CommonSLSandOSPS
-reg delete %_huSPP%\55c92734-d682-4d71-983e-d6ec3f16059f /f >nul 2>&1
-reg delete %_huSPP%\0ff1ce15-a989-479d-af46-f275c6370663 /f >nul 2>&1
+reg delete "%_hkSPP%\55c92734-d682-4d71-983e-d6ec3f16059f" /f >nul 2>&1
+reg delete "%_hkSPP%\0ff1ce15-a989-479d-af46-f275c6370663" /f >nul 2>&1
+reg delete "%_huSPP%\55c92734-d682-4d71-983e-d6ec3f16059f" /f >nul 2>&1
+reg delete "%_huSPP%\0ff1ce15-a989-479d-af46-f275c6370663" /f >nul 2>&1
 exit /b
 ::============================================================================================================================================================
 :OSPSActivation
-reg delete %_hkOSPP%\59a52881-a989-479d-af46-f275c6370663 /f >nul 2>&1
-reg delete %_hkOSPP%\0ff1ce15-a989-479d-af46-f275c6370663 /f >nul 2>&1
+reg delete "%_hkOSPP%\59a52881-a989-479d-af46-f275c6370663" /f >nul 2>&1
+reg delete "%_hkOSPP%\0ff1ce15-a989-479d-af46-f275c6370663" /f >nul 2>&1
 set _spp=OfficeSoftwareProtectionProduct
 set _sps=OfficeSoftwareProtectionService
-
+::===================
 :: Determine if installed Office product is Retail or VL version; Exit if no VolumeLicensed Office is detected
 wmic path %_spp% where (Description like '%%KMSCLIENT%%') get Name >nul 2>&1 || (
     if %_WinBuild% LSS 9200 (
@@ -425,27 +511,29 @@ wmic path %_spp% where (Description like '%%KMSCLIENT%%') get Name >nul 2>&1 || 
         exit /b
     )
 )
-
+::===================
 :: Call Common Core Activation Routines
 call :CommonSLSandOSPS
+reg delete "%_hkOSPP%\59a52881-a989-479d-af46-f275c6370663" /f >nul 2>&1
+reg delete "%_hkOSPP%\0ff1ce15-a989-479d-af46-f275c6370663" /f >nul 2>&1
 exit /b
 ::============================================================================================================================================================
 :CommonSLSandOSPS
 :: Get SoftwareLicensingService/OfficeSoftwareProtectionService version to set 'KMSHost' and 'KMSPort' values
-for /f "tokens=2 delims==" %%a in ('"wmic path %_sps% get Version /value"') do (
-    set _ver=%%a
+for /f "tokens=2 delims==" %%G in ('"wmic path %_sps% get Version /value"') do (
+    set "_ver=%%G"
 )
 wmic path %_sps% where version='%_ver%' call SetKeyManagementServiceMachine MachineName="%_KMSHost%" >nul 2>&1
 wmic path %_sps% where version='%_ver%' call SetKeyManagementServicePort %_KMSPort% >nul 2>&1
 :: This is available only on SoftwareLicensingService version 6.2 and later; Not available for OfficeSoftwareProtectionService
 wmic path %_sps% where version='%_ver%' call SetVLActivationTypeEnabled 2 >nul 2>&1
-
+::===================
 :: For all the supported KMS Clients in SoftwareLicensingProduct/OfficeSoftwareProtectionProduct call 'CheckProduct'
-for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Description like '%%KMSCLIENT%%') get ID /value"') do (
-    set _ActivationID=%%a
+for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Description like '%%KMSCLIENT%%') get ID /value"') do (
+    set "_ActivationID=%%G"
     call :CheckProduct !_ActivationID!
 )
-
+::===================
 :: Clear KMS Server details from KMS Client
 wmic path %_sps% where version='%_ver%' call ClearKeyManagementServiceMachine >nul 2>&1
 wmic path %_sps% where version='%_ver%' call ClearKeyManagementServicePort >nul 2>&1
@@ -460,82 +548,31 @@ exit /b
 if '%1' EQU 'b71515d9-89a2-4c60-88c8-656fbcca7f3a' (
     exit /b
 )
-
-:: Ugly checks for Unknown Windows 10 edition conversions in build 1607
-if '%1' EQU '3f1afc82-f8ac-4f6c-8005-1d233e606eee' (
-    if /i %_EditionID% EQU Professional (
-        exit /b
-    )
-)
-if '%1' EQU '73111121-5638-40f6-bc11-f1d7b0d64300' (
-    if /i %_EditionID% EQU Professional (
-        exit /b
-    )
-)
-if '%1' EQU '2de67392-b7a7-462a-b1ca-108dd189f588' (
-    if /i %_EditionID% EQU ProfessionalEducation (
-        exit /b
-    )
-)
-if '%1' EQU '73111121-5638-40f6-bc11-f1d7b0d64300' (
-    if /i %_EditionID% EQU ProfessionalEducation (
-        exit /b
-    )
-)
-if '%1' EQU '2de67392-b7a7-462a-b1ca-108dd189f588' (
-    if /i %_EditionID% EQU Enterprise (
-        exit /b
-    )
-)
-if '%1' EQU '3f1afc82-f8ac-4f6c-8005-1d233e606eee' (
-    if /i %_EditionID% EQU Enterprise (
-        exit /b
-    )
-)
-if '%1' EQU '5300b18c-2e33-4dc2-8291-47ffcec746dd' (
-    if /i %_EditionID% EQU ProfessionalN (
-        exit /b
-    )
-)
-if '%1' EQU 'e272e3e2-732f-4c65-a8f0-484747d0d947' (
-    if /i %_EditionID% EQU ProfessionalN (
-        exit /b
-    )
-)
-if '%1' EQU 'a80b5abf-76ad-428b-b05d-a47d2dffeebf' (
-    if /i %_EditionID% EQU ProfessionalEducationN (
-        exit /b
-    )
-)
-if '%1' EQU 'e272e3e2-732f-4c65-a8f0-484747d0d947' (
-    if /i %_EditionID% EQU ProfessionalEducationN (
-        exit /b
-    )
-)
-if '%1' EQU 'a80b5abf-76ad-428b-b05d-a47d2dffeebf' (
-    if /i %_EditionID% EQU EnterpriseN (
-        exit /b
-    )
-)
-if '%1' EQU '5300b18c-2e33-4dc2-8291-47ffcec746dd' (
-    if /i %_EditionID% EQU EnterpriseN (
-        exit /b
-    )
-)
-
-:: If Detected KMS Client already has GVLK, call Activate function
-for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where ID='%1' get PartialProductKey /value"') do (
-    set _PartialKey=%%a
-)
-:: Note that the below check ONLY works when variable don't contain quotes
-if [%_PartialKey%] NEQ [] (
+::===================
+:: If Detected KMS Client is already activated earlier OR has GVLK, call Activate function
+wmic path %_spp% where ID='%1' get LicenseStatus | findstr "1" >nul 2>&1 && (
     call :Activate %1
     exit /b
 )
-
+wmic path %_spp% where (PartialProductKey is not NULL) get ID | findstr /i "%1" >nul 2>&1 && (
+    call :Activate %1
+    exit /b
+)
+::===================
+:: Skip for UnNecessary Products
+set /a _OfficeSLP=0
+wmic path %_spp% where ID='%1' get Name /value | findstr /i "Office" 1>nul && (
+    set /a _OfficeSLP=1
+)
+if %_OfficeSLP% EQU 0 (
+    if %_WindowsGVLK% EQU 1 (
+        exit /b
+    )
+)
+::===================
 :: If Detected KMS Client don't have GVLK, do checks for permanent activation, then install GVLK and activate it
-for /f "tokens=3 delims==, " %%a in ('"wmic path %_spp% where ID='%1' get Name /value"') do (
-    set _ProductName=%%a
+for /f "tokens=3 delims==, " %%G in ('"wmic path %_spp% where ID='%1' get Name /value"') do (
+    set "_ProductName=%%G"
 )
 if '%_ProductName%' EQU '16' (
     if %_Office16% EQU 0 (
@@ -563,10 +600,10 @@ if '%_ProductName%' EQU '16' (
 :CheckWindows
 wmic path %_spp% where (LicenseStatus='1' and GracePeriodRemaining='0') get Name 2>nul | findstr /i "Windows" >nul 2>&1 && (
     echo.
-    echo Detected Windows is permanently activated.
+    echo Detected Windows %_Edition% is permanently activated.
     exit /b
 )
-
+::===================
 :: If Windows is not permanently activated, Install GVLK and Activate
 call :SelectKey %1
 exit /b
@@ -574,7 +611,7 @@ exit /b
 :CheckOffice16
 set /a _ls=0
 if '%1' EQU '9caabccb-61b1-4b4b-8bec-d10a3c3ac2ce' (
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%Office16MondoVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%a
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%Office16MondoVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%G
     if !_ls! EQU 1 (
         echo.
         echo Detected Office 2016 Mondo is permanently MAK activated.
@@ -585,7 +622,7 @@ if '%1' EQU '9caabccb-61b1-4b4b-8bec-d10a3c3ac2ce' (
     )
 )
 if '%1' EQU 'd450596f-894d-49e0-966a-fd39ed4c4c64' (
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%Office16ProPlusVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%a
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%Office16ProPlusVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%G
     if !_ls! EQU 1 (
         echo.
         echo Detected Office 2016 ProPlus is permanently MAK activated.
@@ -596,7 +633,7 @@ if '%1' EQU 'd450596f-894d-49e0-966a-fd39ed4c4c64' (
     )
 )
 if '%1' EQU '6bf301c1-b94a-43e9-ba31-d494598c47fb' (
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%Office16VisioProVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%a
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%Office16VisioProVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%G
     if !_ls! EQU 1 (
         echo.
         echo Detected Visio 2016 Pro is permanently MAK activated.
@@ -607,7 +644,7 @@ if '%1' EQU '6bf301c1-b94a-43e9-ba31-d494598c47fb' (
     )
 )
 if '%1' EQU '4f414197-0fc2-4c01-b68a-86cbb9ac254c' (
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%Office16ProjectProVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%a
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%Office16ProjectProVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%G
     if !_ls! EQU 1 (
         echo.
         echo Detected Project 2016 Pro is permanently MAK activated.
@@ -618,7 +655,7 @@ if '%1' EQU '4f414197-0fc2-4c01-b68a-86cbb9ac254c' (
     )
 )
 if '%1' EQU 'dedfa23d-6ed1-45a6-85dc-63cae0546de6' (
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%Office16StandardVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%a
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%Office16StandardVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%G
     if !_ls! EQU 1 (
         echo.
         echo Detected Office 2016 Standard is permanently MAK activated.
@@ -629,7 +666,7 @@ if '%1' EQU 'dedfa23d-6ed1-45a6-85dc-63cae0546de6' (
     )
 )
 if '%1' EQU 'aa2a7821-1827-4c2c-8f1d-4513a34dda97' (
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%Office16VisioStdVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%a
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%Office16VisioStdVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%G
     if !_ls! EQU 1 (
         echo.
         echo Detected Visio 2016 Standard is permanently MAK activated.
@@ -640,7 +677,7 @@ if '%1' EQU 'aa2a7821-1827-4c2c-8f1d-4513a34dda97' (
     )
 )
 if '%1' EQU 'da7ddabc-3fbe-4447-9e01-6ab7440b4cd4' (
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%Office16ProjectStdVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%a
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%Office16ProjectStdVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%G
     if !_ls! EQU 1 (
         echo.
         echo Detected Project 2016 Standard is permanently MAK activated.
@@ -650,7 +687,7 @@ if '%1' EQU 'da7ddabc-3fbe-4447-9e01-6ab7440b4cd4' (
         exit /b
     )
 )
-
+::===================
 :: If Office 2016 product is not permanently activated, Install GVLK and Activate
 call :SelectKey %1
 exit /b
@@ -658,7 +695,7 @@ exit /b
 :CheckOffice15
 set /a _ls=0
 if '%1' EQU 'dc981c6b-fc8e-420f-aa43-f8f33e5c0923' (
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%OfficeMondoVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%a
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%OfficeMondoVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%G
     if !_ls! EQU 1 (
         echo.
         echo Detected Office 2013 Mondo is permanently MAK activated.
@@ -669,7 +706,7 @@ if '%1' EQU 'dc981c6b-fc8e-420f-aa43-f8f33e5c0923' (
     )
 )
 if '%1' EQU 'b322da9c-a2e2-4058-9e4e-f59a6970bd69' (
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%OfficeProPlusVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%a
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%OfficeProPlusVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%G
     if !_ls! EQU 1 (
         echo.
         echo Detected Office 2013 ProPlus is permanently MAK activated.
@@ -680,7 +717,7 @@ if '%1' EQU 'b322da9c-a2e2-4058-9e4e-f59a6970bd69' (
     )
 )
 if '%1' EQU 'e13ac10e-75d0-4aff-a0cd-764982cf541c' (
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%OfficeVisioProVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%a
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%OfficeVisioProVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%G
     if !_ls! EQU 1 (
         echo.
         echo Detected Visio 2013 Pro is permanently MAK activated.
@@ -691,7 +728,7 @@ if '%1' EQU 'e13ac10e-75d0-4aff-a0cd-764982cf541c' (
     )
 )
 if '%1' EQU '4a5d124a-e620-44ba-b6ff-658961b33b9a' (
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%OfficeProjectProVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%a
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%OfficeProjectProVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%G
     if !_ls! EQU 1 (
         echo.
         echo Detected Project 2013 Pro is permanently MAK activated.
@@ -702,7 +739,7 @@ if '%1' EQU '4a5d124a-e620-44ba-b6ff-658961b33b9a' (
     )
 )
 if '%1' EQU 'b13afb38-cd79-4ae5-9f7f-eed058d750ca' (
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%OfficeStandardVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%a
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%OfficeStandardVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%G
     if !_ls! EQU 1 (
         echo.
         echo Detected Office 2013 Standard is permanently MAK activated.
@@ -713,7 +750,7 @@ if '%1' EQU 'b13afb38-cd79-4ae5-9f7f-eed058d750ca' (
     )
 )
 if '%1' EQU 'ac4efaf0-f81f-4f61-bdf7-ea32b02ab117' (
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%OfficeVisioStdVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%a
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%OfficeVisioStdVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%G
     if !_ls! EQU 1 (
         echo.
         echo Detected Visio 2013 Standard is permanently MAK activated.
@@ -724,7 +761,7 @@ if '%1' EQU 'ac4efaf0-f81f-4f61-bdf7-ea32b02ab117' (
     )
 )
 if '%1' EQU '427a28d1-d17c-4abf-b717-32c780ba6f07' (
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%OfficeProjectStdVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%a
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%OfficeProjectStdVL_MAK%%') get LicenseStatus /value"') do set /a _ls=%%G
     if !_ls! EQU 1 (
         echo.
         echo Detected Project 2013 Standard is permanently MAK activated.
@@ -734,7 +771,7 @@ if '%1' EQU '427a28d1-d17c-4abf-b717-32c780ba6f07' (
         exit /b
     )
 )
-
+::===================
 :: If Office 2013 product is not permanently activated, Install GVLK and Activate
 call :SelectKey %1
 exit /b
@@ -742,11 +779,11 @@ exit /b
 :CheckOffice14
 set /a _ls=0
 set /a _ls2=0
-for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%OfficeVisioPrem-MAK%%') get LicenseStatus /value" 2^>nul') do set /a _vPrem=%%a
-for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%OfficeVisioPro-MAK%%') get LicenseStatus /value" 2^>nul') do set /a _vPro=%%a
+for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%OfficeVisioPrem-MAK%%') get LicenseStatus /value" 2^>nul') do set /a _vPrem=%%G
+for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%OfficeVisioPro-MAK%%') get LicenseStatus /value" 2^>nul') do set /a _vPro=%%G
 if '%1' EQU '6f327760-8c5c-417c-9b61-836a98287e0c' (
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%OfficeProPlus-MAK%%') get LicenseStatus /value"') do set /a _ls=%%a
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%OfficeProPlusAcad-MAK%%') get LicenseStatus /value"') do set /a _ls2=%%a
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%OfficeProPlus-MAK%%') get LicenseStatus /value"') do set /a _ls=%%G
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%OfficeProPlusAcad-MAK%%') get LicenseStatus /value"') do set /a _ls2=%%G
     if !_ls! EQU 1 (
         echo.
         echo Detected Office 2010 ProPlus is permanently MAK activated.
@@ -762,7 +799,7 @@ if '%1' EQU '6f327760-8c5c-417c-9b61-836a98287e0c' (
     )
 )
 if '%1' EQU '09ed9640-f020-400a-acd8-d7d867dfd9c2' (
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%OfficeMondo-MAK%%') get LicenseStatus /value"') do set /a _ls=%%a
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%OfficeMondo-MAK%%') get LicenseStatus /value"') do set /a _ls=%%G
     if !_ls! EQU 1 (
         echo.
         echo Detected Office 2010 Mondo is permanently MAK activated.
@@ -773,7 +810,7 @@ if '%1' EQU '09ed9640-f020-400a-acd8-d7d867dfd9c2' (
     )
 )
 if '%1' EQU 'df133ff7-bf14-4f95-afe3-7b48e7e331ef' (
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%OfficeProjectPro-MAK%%') get LicenseStatus /value"') do set /a _ls=%%a
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%OfficeProjectPro-MAK%%') get LicenseStatus /value"') do set /a _ls=%%G
     if !_ls! EQU 1 (
         echo.
         echo Detected Project 2010 Pro is permanently MAK activated.
@@ -784,7 +821,7 @@ if '%1' EQU 'df133ff7-bf14-4f95-afe3-7b48e7e331ef' (
     )
 )
 if '%1' EQU '5dc7bf61-5ec9-4996-9ccb-df806a2d0efe' (
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%OfficeProjectStd-MAK%%') get LicenseStatus /value"') do set /a _ls=%%a
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%OfficeProjectStd-MAK%%') get LicenseStatus /value"') do set /a _ls=%%G
     if !_ls! EQU 1 (
         echo.
         echo Detected Project 2010 Standard is permanently MAK activated.
@@ -795,7 +832,7 @@ if '%1' EQU '5dc7bf61-5ec9-4996-9ccb-df806a2d0efe' (
     )
 )
 if '%1' EQU '9da2a678-fb6b-4e67-ab84-60dd6a9c819a' (
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%OfficeStandard-MAK%%') get LicenseStatus /value"') do set /a _ls=%%a
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%OfficeStandard-MAK%%') get LicenseStatus /value"') do set /a _ls=%%G
     if !_ls! EQU 1 (
         echo.
         echo Detected Office 2010 Standard is permanently MAK activated.
@@ -806,7 +843,7 @@ if '%1' EQU '9da2a678-fb6b-4e67-ab84-60dd6a9c819a' (
     )
 )
 if '%1' EQU 'ea509e87-07a1-4a45-9edc-eba5a39f36af' (
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%OfficeSmallBusBasics-MAK%%') get LicenseStatus /value"') do set /a _ls=%%a
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%OfficeSmallBusBasics-MAK%%') get LicenseStatus /value"') do set /a _ls=%%G
     if !_ls! EQU 1 (
         echo.
         echo Detected Office 2010 Small Business is permanently MAK activated.
@@ -817,8 +854,8 @@ if '%1' EQU 'ea509e87-07a1-4a45-9edc-eba5a39f36af' (
     )
 )
 if '%1' EQU '92236105-bb67-494f-94c7-7f7a607929bd' (
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%OfficeVisioPrem-MAK%%') get LicenseStatus /value"') do set /a _ls=%%a
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%OfficeVisioPro-MAK%%') get LicenseStatus /value"') do set /a _ls2=%%a
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%OfficeVisioPrem-MAK%%') get LicenseStatus /value"') do set /a _ls=%%G
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%OfficeVisioPro-MAK%%') get LicenseStatus /value"') do set /a _ls2=%%G
     if !_ls! EQU 1 (
         echo.
         echo Detected Visio 2010 Premium is permanently MAK activated.
@@ -835,8 +872,8 @@ if '%1' EQU '92236105-bb67-494f-94c7-7f7a607929bd' (
 )
 if defined _vPrem exit /b
 if '%1' EQU 'e558389c-83c3-4b29-adfe-5e4d7f46c358' (
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%OfficeVisioPro-MAK%%') get LicenseStatus /value"') do set /a _ls=%%a
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%OfficeVisioStd-MAK%%') get LicenseStatus /value"') do set /a _ls2=%%a
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%OfficeVisioPro-MAK%%') get LicenseStatus /value"') do set /a _ls=%%G
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%OfficeVisioStd-MAK%%') get LicenseStatus /value"') do set /a _ls2=%%G
     if !_ls! EQU 1 (
         echo.
         echo Detected Visio 2010 Pro is permanently MAK activated.
@@ -853,7 +890,7 @@ if '%1' EQU 'e558389c-83c3-4b29-adfe-5e4d7f46c358' (
 )
 if defined _vPro exit /b
 if '%1' EQU '9ed833ff-4f92-4f36-b370-8683a4f13275' (
-    for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where (Name like '%%OfficeVisioStd-MAK%%') get LicenseStatus /value"') do set /a _ls=%%a
+    for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where (Name like '%%OfficeVisioStd-MAK%%') get LicenseStatus /value"') do set /a _ls=%%G
     if !_ls! EQU 1 (
         echo.
         echo Detected Visio 2010 Standard is permanently MAK activated.
@@ -863,7 +900,7 @@ if '%1' EQU '9ed833ff-4f92-4f36-b370-8683a4f13275' (
         exit /b
     )
 )
-
+::===================
 :: If Office 2010 product is not permanently activated, Install GVLK and Activate
 call :SelectKey %1
 exit /b
@@ -872,43 +909,53 @@ exit /b
 :: Clear any manually set KMSHostIP and KMSPort with /skms or /sethst; Since they override KMSHostIP and KMSPort values set for SLS/OSPS
 wmic path %_spp% where ID='%1' call ClearKeyManagementServiceMachine >nul 2>&1
 wmic path %_spp% where ID='%1' call ClearKeyManagementServicePort >nul 2>&1
-
+::===================
 :: Call Activate method of the corresponding KMS Client
-for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where ID='%1' get Name /value"') do (
+for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where ID='%1' get Name /value"') do (
     echo.
-    echo Attempting to Activate %%a
+    echo Attempting to activate %%G
 )
 wmic path %_spp% where ID='%1' call Activate >nul 2>&1
-
+::===================
 :: Get Remaining Grace Period of the KMS Client
-for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where ID='%1' get GracePeriodRemaining /value"') do (
-    set /a _gprMinutes=%%a
+for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where ID='%1' get GracePeriodRemaining /value"') do (
+    set /a _gprMinutes=%%G
 )
+set /a _gprDays=%_gprMinutes%/1440
+::===================
 if %_gprMinutes% EQU 43200 (
-    echo Windows Core/ProfessionalWMC Activation Successful
-    echo Remaining Period: 30 days ^(%_gprMinutes% minutes^)
-    exit /b
+    if %_WinBuild% EQU 9200 (
+        echo Windows 8 Core/ProfessionalWMC Activation Successful
+        echo Remaining Period: %_gprDays% days ^(%_gprMinutes% minutes^)
+        exit /b
+    )
 )
 if %_gprMinutes% EQU 64800 (
     echo Windows Core/ProfessionalWMC Activation Successful
-    echo Remaining Period: 45 days ^(%_gprMinutes% minutes^)
+    echo Remaining Period: %_gprDays% days ^(%_gprMinutes% minutes^)
     exit /b
 )
-if %_gprMinutes% EQU 259200 (
-    echo Product Activation Successful
-) else (
-    echo Product Activation Failed
+if %_gprMinutes% EQU 216000000 (
+    if %_WinBuild% GEQ 15063 (
+        echo Windows 10 Enterprise G/GN Activation Successful
+        echo Remaining Period: %_gprDays% days ^(%_gprMinutes% minutes^)
+        exit /b
+    )
 )
-set /a _gprDays=%_gprMinutes%/1440
+if %_gprMinutes% EQU 259200 (
+    echo Activation Successful
+) else (
+    echo Activation Failed
+)
 echo Remaining Period: %_gprDays% days ^(%_gprMinutes% minutes^)
 exit /b
 ::============================================================================================================================================================
 :SelectKey
 :: Select GenericVolumeLicenseKey based on Activation ID (SKU-ID) and Install it, if found
-for /f "tokens=2 delims==" %%a in ('"wmic path %_spp% where ID='%1' get Name /value"') do (
-    set _Name=%%a
+for /f "tokens=2 delims==" %%G in ('"wmic path %_spp% where ID='%1' get Name /value"') do (
+    set "_Name=%%G"
     echo.
-    echo Searching GenericVolumeLicenseKey for %%a
+    echo Searching GenericVolumeLicenseKey for %%G
     goto :%1 2>nul || goto :KeyNotFound
 )
 ::============================================================================================================================================================
@@ -971,6 +1018,26 @@ goto :InstallKey
 :: Word 2016
 :bb11badf-d8aa-470e-9311-20eaf80fe5cc
 set _key=WXY84-JN2Q9-RBCCQ-3Q3J3-3PFJ6
+goto :InstallKey
+:: Project 2016 Professional XC2RVL KMS ClientC2R
+:829b8110-0e6f-4349-bca4-42803577788d
+set _key=WGT24-HCNMF-FQ7XH-6M8K7-DRTW9
+goto :InstallKey
+:: Project 2016 Standard XC2RVL KMS ClientC2R
+:cbbaca45-556a-4416-ad03-bda598eaa7c8
+set _key=D8NRQ-JTYM3-7J2DX-646CT-6836M
+goto :InstallKey
+:: Visio 2016 Professional XC2RVL KMS ClientC2R
+:b234abe3-0857-4f9c-b05a-4dc314f85557
+set _key=69WXN-MBYV6-22PQG-3WGHK-RM6XC
+goto :InstallKey
+:: Visio 2016 Standard XC2RVL KMS ClientC2R
+:361fe620-64f4-41b5-ba77-84f8e079b1f7
+set _key=NY48V-PPYYH-3F4PX-XJRKJ-W4423
+goto :InstallKey
+:: Office 2016 MondoR Automation
+:e914ea6e-a5fa-4439-a394-a9bb3293ca09
+set _key=DMTCJ-KNRKX-26982-JYCKT-P7KB6
 goto :InstallKey
 ::============================================================================================================================================================
 :: Office 2013 Professional Plus
@@ -1127,37 +1194,45 @@ goto :InstallKey
 set _key=7TC2V-WXF6P-TD7RT-BQRXR-B8K32
 goto :InstallKey
 ::============================================================================================================================================================
-:: Windows 10 Home
-:58e97c99-f377-4ef1-81d5-4ad5522b5fd8
-set _key=TX9XD-98N7V-6WMQ6-BX7FG-H8Q99
-goto :InstallKey
-:: Windows 10 Home N
-:7b9e1751-a8da-4f75-9560-5fadfe3d8e38
-set _key=3KHY7-WNT83-DGQKR-F7HPR-844BM
-goto :InstallKey
-:: Windows 10 Home Single Language
-:cd918a57-a41b-4c82-8dce-1a538e221a83
-set _key=7HNRX-D7KGG-3K4RQ-4WPJ4-YTDFH
-goto :InstallKey
-:: Windows 10 Home Country Specific
-:a9107544-f4a0-4053-a96a-1479abdef912
-set _key=PVMJN-6DFY6-9CCP6-7BKTT-D3WVR
-goto :InstallKey
 :: Windows 10 Professional
 :2de67392-b7a7-462a-b1ca-108dd189f588
+if '%_Edition%' NEQ 'Professional' goto :ErrorEdition
 set _key=W269N-WFGWX-YVC9B-4J6C9-T83GX
 goto :InstallKey
 :: Windows 10 Professional N
 :a80b5abf-76ad-428b-b05d-a47d2dffeebf
+if '%_Edition%' NEQ 'ProfessionalN' goto :ErrorEdition
 set _key=MH37W-N47XK-V7XM9-C7227-GCQG9
 goto :InstallKey
 :: Windows 10 Professional Education
 :3f1afc82-f8ac-4f6c-8005-1d233e606eee
+if '%_Edition%' NEQ 'ProfessionalEducation' goto :ErrorEdition
 set _key=6TP4R-GNPTD-KYYHQ-7B7DP-J447Y
 goto :InstallKey
 :: Windows 10 Professional Education N
 :5300b18c-2e33-4dc2-8291-47ffcec746dd
+if '%_Edition%' NEQ 'ProfessionalEducationN' goto :ErrorEdition
 set _key=YVWGF-BXNMC-HTQYQ-CPQ99-66QFC
+goto :InstallKey
+:: Windows 10 Enterprise
+:73111121-5638-40f6-bc11-f1d7b0d64300
+if '%_Edition%' NEQ 'Enterprise' goto :ErrorEdition
+set _key=NPPR9-FWDCX-D2C8J-H872K-2YT43
+goto :InstallKey
+:: Windows 10 Enterprise N
+:e272e3e2-732f-4c65-a8f0-484747d0d947
+if '%_Edition%' NEQ 'EnterpriseN' goto :ErrorEdition
+set _key=DPH2V-TTNVB-4X9Q3-TJR4H-KHJW4
+goto :InstallKey
+:: Windows 10 Professional for Advanced PCs
+if '%_Edition%' NEQ 'ProfessionalWorkstation' goto :ErrorEdition
+:82bbc092-bc50-4e16-8e18-b74fc486aec3
+set _key=NRG8B-VKK3Q-CXVCJ-9G2XF-6Q84J
+goto :InstallKey
+:: Windows 10 Professional for Advanced PCs N
+if '%_Edition%' NEQ 'ProfessionalWorkstationN' goto :ErrorEdition
+:4b1571d3-bafb-4b40-8087-a961be2caf65
+set _key=9FNHH-K3HBT-3W4TD-6383H-6XYWF
 goto :InstallKey
 :: Windows 10 Education
 :e0c42288-980c-4788-a014-c080d2e1926e
@@ -1166,14 +1241,6 @@ goto :InstallKey
 :: Windows 10 Education N
 :3c102355-d027-42c6-ad23-2e7ef8a02585
 set _key=2WH4N-8QGBV-H22JP-CT43Q-MDWWJ
-goto :InstallKey
-:: Windows 10 Enterprise
-:73111121-5638-40f6-bc11-f1d7b0d64300
-set _key=NPPR9-FWDCX-D2C8J-H872K-2YT43
-goto :InstallKey
-:: Windows 10 Enterprise N
-:e272e3e2-732f-4c65-a8f0-484747d0d947
-set _key=DPH2V-TTNVB-4X9Q3-TJR4H-KHJW4
 goto :InstallKey
 :: Windows 10 Enterprise 2015 LTSB
 :7b51a46c-0c04-4e8f-9af4-8496cca90d5e
@@ -1191,6 +1258,31 @@ goto :InstallKey
 :9f776d83-7156-45b2-8a5c-359b9c9f22a3
 set _key=QFFDN-GRT3P-VKWWX-X7T3R-8B639
 goto :InstallKey
+:: Windows 10 Enterprise G
+:e0b2d383-d112-413f-8a80-97f373a5820c
+set _key=YYVX9-NTFWV-6MDM3-9PT4T-4M68B
+goto :InstallKey
+:: Windows 10 Enterprise GN
+:e38454fb-41a4-4f59-a5dc-25080e354730
+set _key=44RPN-FTY23-9VTTB-MP9BX-T84FV
+goto :InstallKey
+:: Windows 10 Home
+:58e97c99-f377-4ef1-81d5-4ad5522b5fd8
+set _key=TX9XD-98N7V-6WMQ6-BX7FG-H8Q99
+goto :InstallKey
+:: Windows 10 Home N
+:7b9e1751-a8da-4f75-9560-5fadfe3d8e38
+set _key=3KHY7-WNT83-DGQKR-F7HPR-844BM
+goto :InstallKey
+:: Windows 10 Home Single Language
+:cd918a57-a41b-4c82-8dce-1a538e221a83
+set _key=7HNRX-D7KGG-3K4RQ-4WPJ4-YTDFH
+goto :InstallKey
+:: Windows 10 Home Country Specific
+:a9107544-f4a0-4053-a96a-1479abdef912
+set _key=PVMJN-6DFY6-9CCP6-7BKTT-D3WVR
+goto :InstallKey
+::----------------------------------------------------------------------
 :: Windows Server 2016 Essentials
 :2b5a1b0f-a5ab-4c54-ac2f-a6d94824a283
 set _key=JCKRF-N37P4-C2D82-9YXRT-4M63B
@@ -1210,6 +1302,10 @@ goto :InstallKey
 :: Windows Server 2016 Azure Core
 :3dbf341b-5f6c-4fa7-b936-699dce9e263f
 set _key=VP34G-4NPPG-79JTQ-864T4-R3MQX
+goto :InstallKey
+:: Windows Server 2016 RDSH
+:e4db50ea-bda1-4566-b047-0ca50abc6f07
+set _key=7NBT4-WGBQX-MP4H7-QXFF8-YP3KX
 goto :InstallKey
 ::============================================================================================================================================================
 :: Windows 8.1 Professional
@@ -1288,6 +1384,7 @@ goto :InstallKey
 :cab491c7-a918-4f60-b502-dab75e334f40
 set _key=TNFGH-2R6PB-8XM3K-QYHX2-J4296
 goto :InstallKey
+::----------------------------------------------------------------------
 :: Windows Server 2012 R2 Standard
 :b3ca044e-a358-4d68-9883-aaa2941aca99
 set _key=D2N9P-3P6X9-2R39C-7RTCD-MDVJX
@@ -1337,6 +1434,7 @@ goto :InstallKey
 :18db1848-12e0-4167-b9d7-da7fcda507db
 set _key=NKB3R-R2F8T-3XCDP-7Q2KW-XWYQ2
 goto :InstallKey
+::----------------------------------------------------------------------
 :: Windows Server 2012 / Windows 8 Core
 :c04ed6bf-55c8-4b47-9f8e-5a1f31ceee60
 set _key=BN3D2-R7TKB-3YPBD-8DRP2-27GG4
@@ -1394,6 +1492,7 @@ goto :InstallKey
 :46bbed08-9c7b-48fc-a614-95250573f4ea
 set _key=C29WB-22CC8-VJ326-GHFJW-H9DH4
 goto :InstallKey
+::----------------------------------------------------------------------
 :: Windows Server 2008 R2 Web
 :a78b8bd9-8017-4df5-b86a-09f756affa7c
 set _key=6TPJF-RBVHG-WBW2R-86QPH-6RTM4
@@ -1418,6 +1517,11 @@ goto :InstallKey
 :8a26851c-1c7e-48d3-a687-fbca9b9ac16b
 set _key=GT63C-RJFQ3-4GMB6-BRFB9-CB83V
 goto :InstallKey
+:: Windows MultiPoint Server 2010
+:f772515c-0e87-48d5-a676-e6962c3e1195
+set _key=736RG-XDKJK-V34PF-BHK87-J6X3K
+goto :InstallKey
+::----------------------------------------------------------------------
 :: Windows 7 Embedded POS Ready
 :db537896-376f-48ae-a492-53d0547773d0
 set _key=YBYF6-BHCR3-JPKRB-CDW7B-F9BK4
@@ -1429,10 +1533,6 @@ goto :InstallKey
 :: Windows 7 Embedded Standard OEM
 :e1a8296a-db37-44d1-8cce-7bc961d59c54
 set _key=XGY72-BRBBT-FF8MH-2GG8H-W7KCW
-goto :InstallKey
-:: Windows MultiPoint Server 2010
-:f772515c-0e87-48d5-a676-e6962c3e1195
-set _key=736RG-XDKJK-V34PF-BHK87-J6X3K
 goto :InstallKey
 ::============================================================================================================================================================
 :: Windows Vista Business
@@ -1451,6 +1551,7 @@ goto :InstallKey
 :d4f54950-26f2-4fb4-ba21-ffab16afcade
 set _key=VTC42-BM838-43QHV-84HX6-XJXKV
 goto :InstallKey
+::----------------------------------------------------------------------
 :: Windows Server 2008 Web
 :ddfa9f7c-f09e-40b9-8c1a-be877a9a7f4b
 set _key=WYR28-R7TFJ-3X2YQ-YCY4H-M249D
@@ -1488,13 +1589,17 @@ goto :InstallKey
 set _key=4DWFP-JF3DJ-B7DTH-78FJB-PDRHK
 goto :InstallKey
 ::============================================================================================================================================================
+:: If current SKU-ID is not equal to installed edition ID, then interrupt the 'InstallKey' process
+:ErrorEdition
+exit /b
+::============================================================================================================================================================
 :KeyNotFound
 :: If GVLK is not found for the current SKU-ID, attempt Activation as GVLK might be present in OS by default
 echo.
 echo GVLK for %_Name%
 echo with SKU-ID %1 Not Found
 echo.
-echo If Activation Fails Now, Please enter GVLK for this Product manually and re-run RunMeAsAdmin File
+echo If Activation Fails Now, Please enter GVLK for this Product manually and re-run KMS_VL_ALL
 call :Activate %1
 exit /b
 ::============================================================================================================================================================
