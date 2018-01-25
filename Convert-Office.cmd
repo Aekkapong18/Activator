@@ -1,101 +1,101 @@
 @echo off
-::============================================================================================================================
+::=============================================================
 chcp 437 >nul
-::============================================================================================================================
+::=============================================================
 :: Get Fully Qualified FileName of the script
 set "_FileName=%~f0"
-::============================================================================================================================
+::=============================================================
 :: Get Drive and Path containing the script
 set "_FileDir=%~dp0"
-::============================================================================================================================
+::=============================================================
 setlocal EnableExtensions EnableDelayedExpansion
-::============================================================================================================================
+::=============================================================
 :: Get Administrator Rights
 fltmc >nul 2>&1 || (
-    echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\GetAdmin.vbs"
-    echo UAC.ShellExecute "!_FileName!", "", "", "runas", 1 >> "%temp%\GetAdmin.vbs"
-    cmd /u /c type "%temp%\GetAdmin.vbs">"%temp%\GetAdminUnicode.vbs"
-    cscript //nologo "%temp%\GetAdminUnicode.vbs"
-    del /f /q "%temp%\GetAdmin.vbs" >nul 2>&1
-    del /f /q "%temp%\GetAdminUnicode.vbs" >nul 2>&1
-    exit
+  echo Set UAC = CreateObject^("Shell.Application"^) > "%temp%\GetAdmin.vbs"
+  echo UAC.ShellExecute "!_FileName!", "", "", "runas", 1 >> "%temp%\GetAdmin.vbs"
+  cmd /u /c type "%temp%\GetAdmin.vbs">"%temp%\GetAdminUnicode.vbs"
+  cscript //nologo "%temp%\GetAdminUnicode.vbs"
+  del /f /q "%temp%\GetAdmin.vbs" >nul 2>&1
+  del /f /q "%temp%\GetAdminUnicode.vbs" >nul 2>&1
+  exit
 )
-::============================================================================================================================
+::=============================================================
 :: Go to the Path of the Script
 pushd "!_FileDir!"
-::============================================================================================================================
+::=============================================================
 :: Get Windows OS build
 for /f "tokens=2 delims==" %%G in ('wmic path Win32_OperatingSystem get BuildNumber /value') do (
-    set /a _WinBuild=%%G
+  set /a _WinBuild=%%G
 )
-::============================================================================================================================
+::=============================================================
 :: Get Architecture of the OS
 for /f "tokens=2 delims==" %%G in ('wmic path Win32_Processor get AddressWidth /value') do (
-    set "_OSarch=%%G-bit"
+  set "_OSarch=%%G-bit"
 )
-::============================================================================================================================
+::=============================================================
 :: Set SLMGR alias
 set "_SLMGR=%SystemRoot%\System32\slmgr.vbs"
 
 :: Get Office C2R installation path
 for /f "tokens=2*" %%G in ('"reg query HKLM\SOFTWARE\Microsoft\Office\ClickToRun /v InstallPath" 2^>nul') do (
-    set "_OSPP=%%H\Office16\OSPP.VBS"
-    set "_LicPath=%%H\root\Licenses16"
+  set "_OSPP=%%H\Office16\OSPP.VBS"
+  set "_LicPath=%%H\root\Licenses16"
 )
 
 sc query ClickToRunSvc >nul 2>&1
 
 if %ERRORLEVEL% EQU 1060 (
-    echo.
-    echo Could not detect Office 2016 ClickToRun service...
-    goto :end
+  echo.
+  echo Could not detect Office 2016 ClickToRun service...
+  goto :end
 )
 
 if not exist "%_LicPath%\*.xrm-ms" (
-    echo.
-    echo Could not detect Office 2016 Licenses files...
-    goto :end
+  echo.
+  echo Could not detect Office 2016 Licenses files...
+  goto :end
 )
 
 if %_WinBuild% LSS 9200 if not exist "%_OSPP%" (
-    echo.
-    echo Could not detect Licensing tool OSPP.VBS...
-    goto :end
+  echo.
+  echo Could not detect Licensing tool OSPP.VBS...
+  goto :end
 )
-::============================================================================================================================
+::=============================================================
 :Check
 set /a _VL=0
 set /a _TB=0
 set /a _Grace=0
 
 if %_WinBuild% GEQ 9200 (
-    set _MicrosoftProduct=SoftwareLicensingProduct
-    set _MicrosoftService=SoftwareLicensingService
+  set _MicrosoftProduct=SoftwareLicensingProduct
+  set _MicrosoftService=SoftwareLicensingService
 ) else (
-    set _MicrosoftProduct=OfficeSoftwareProtectionProduct
-    set _MicrosoftService=OfficeSoftwareProtectionService
+  set _MicrosoftProduct=OfficeSoftwareProtectionProduct
+  set _MicrosoftService=OfficeSoftwareProtectionService
 )
 
 for /f "tokens=2 delims==" %%G in ('"wmic path %_MicrosoftService% get version /format:list" 2^>nul') do (
-    set "_ver=%%G"
+  set "_ver=%%G"
 )
 
 wmic path %_MicrosoftProduct% where (Description like '%%KMSCLIENT%%' and LicenseFamily != 'Office16MondoR_KMS_Automation') get Name /value 2>nul | findstr /i /C:"Office 16" 1>nul && (
-    set /a _VL=1
+  set /a _VL=1
 )
 
 wmic path %_MicrosoftProduct% where (Description like '%%TIMEBASED%%') get Name /value 2>nul | findstr /i /C:"Office 16" 1>nul && (
-    set /a _TB=1
+  set /a _TB=1
 )
 
 wmic path %_MicrosoftProduct% where (Description like '%%Grace%%') get Name /format:list 2>nul | findstr /i /C:"Office 16" 1>nul && (
-    set /a _Grace=1
+  set /a _Grace=1
 )
 
 if %_TB% EQU 0 if %_Grace% EQU 0 if %_VL% EQU 1 (
-    echo.
-    echo No Conversion or Cleanup Required...
-    goto :end
+  echo.
+  echo No Conversion or Cleanup Required...
+  goto :end
 )
 
 echo.
@@ -103,24 +103,24 @@ echo Cleaning Current Office 2016 Licenses...
 cd /d "%~dp0"
 
 %_OSarch%\cleanospp.exe >nul 2>&1
-::============================================================================================================================
+::=============================================================
 :Ret2VL
 echo.
 echo Installing Office 2016 Volume Licenses...
 cd /d "%_LicPath%"
 
 for /f "delims=" %%G in ('dir /b /on client-issuance-*.xrm-ms') do (
-    if %_WinBuild% GEQ 9200 (
-        cscript //Nologo //B %_SLMGR% /ilc %%G
-    ) else (
-        cscript //Nologo //B "%_OSPP%" /inslic:%%G
-    )
+  if %_WinBuild% GEQ 9200 (
+    cscript //Nologo //B %_SLMGR% /ilc %%G
+  ) else (
+    cscript //Nologo //B "%_OSPP%" /inslic:%%G
+  )
 )
 
 if %_WinBuild% GEQ 9200 (
-    cscript //Nologo //B %_SLMGR% /ilc pkeyconfig-office.xrm-ms
+  cscript //Nologo //B %_SLMGR% /ilc pkeyconfig-office.xrm-ms
 ) else (
-    cscript //Nologo //B "%_OSPP%" /inslic:pkeyconfig-office.xrm-ms
+  cscript //Nologo //B "%_OSPP%" /inslic:pkeyconfig-office.xrm-ms
 )
 
 set SkuIds=(mondo,proplus,projectpro,visiopro,standard,projectstd,visiostd)
@@ -129,89 +129,89 @@ set ProSkuId2=(o365proplus,professional)
 set StdSkuIds=(excel,onenote,outlook,powerpoint,publisher,word)
 
 for /d %%G in %SkuIds% do (
-    set /a _%%G=0
+  set /a _%%G=0
 )
 
 for /d %%G in %ProSkuIds% do (
-    set /a _%%G=0
+  set /a _%%G=0
 )
 
 for /d %%G in %ProSkuId2% do (
-    set /a _%%G=0
+  set /a _%%G=0
 )
 
 for /f "tokens=2,*" %%G in ('"reg query HKLM\SOFTWARE\Microsoft\Office\ClickToRun\Configuration /v ProductReleaseIds" 2^>nul') do (
-    set "ProductIds=%%H"
+  set "ProductIds=%%H"
 )
 
 for /d %%G in %SkuIds% do (
-    echo %ProductIds% | findstr /I /C:"%%Gretail" 1>nul && (
-        set /a _%%G=1
-    )
+  echo %ProductIds% | findstr /I /C:"%%Gretail" 1>nul && (
+    set /a _%%G=1
+  )
 )
 
 for /d %%G in %ProSkuIds% do (
-    echo %ProductIds% | findstr /I /C:"%%Gretail" 1>nul && (
-        set /a _%%G=1
-    )
+  echo %ProductIds% | findstr /I /C:"%%Gretail" 1>nul && (
+    set /a _%%G=1
+  )
 )
 
 for /d %%G in %ProSkuId2% do (
-    echo %ProductIds% | findstr /I /C:"%%Gretail" 1>nul && (
-        set /a _%%G=1
-    )
+  echo %ProductIds% | findstr /I /C:"%%Gretail" 1>nul && (
+    set /a _%%G=1
+  )
 )
 
 if %_mondo% EQU 1 (
-    call :InsLic mondo
-    goto :GVLK
+  call :InsLic mondo
+  goto :GVLK
 )
 
 for /d %%G in %SkuIds% do (
-    if !_%%G! EQU 1 (
-        call :InsLic %%G
-    )
+  if !_%%G! EQU 1 (
+    call :InsLic %%G
+  )
 )
 
 for /d %%G in %ProSkuId2% do (
-    if !_%%G! EQU 1 if !_proplus! EQU 0 call :InsLic proplus
+  if !_%%G! EQU 1 if !_proplus! EQU 0 call :InsLic proplus
 )
 
 for /d %%G in %StdSkuIds% do (
-    if !_%%G! EQU 1 if !_proplus! EQU 0 if !_standard! EQU 0 if !_professional! EQU 0 call :InsLic %%G
+  if !_%%G! EQU 1 if !_proplus! EQU 0 if !_standard! EQU 0 if !_professional! EQU 0 call :InsLic %%G
 )
 
 for /d %%G in (skypeforbusiness) do (
-    if !_%%G! EQU 1 if !_proplus! EQU 0 call :InsLic %%G
+  if !_%%G! EQU 1 if !_proplus! EQU 0 call :InsLic %%G
 )
 
 for /d %%G in (access) do (
-    if !_%%G! EQU 1 if !_proplus! EQU 0 !_professional! EQU 0 call :InsLic %%G
+  if !_%%G! EQU 1 if !_proplus! EQU 0 !_professional! EQU 0 call :InsLic %%G
 )
-::============================================================================================================================
+::=============================================================
 :GVLK
 echo.
 echo Installing KMS Client Keys...
 echo.
 for /f "tokens=2 delims==" %%G in ('"wmic path %_MicrosoftProduct% where (Description like '%%Office 16, VOLUME_KMSCLIENT%%') get ID /value"') do (
-    set "ActID=%%G"
-    call :InsKey
+  set "ActID=%%G"
+  call :InsKey
 )
 goto :end
-::============================================================================================================================
+::=============================================================
 :InsLic
 for /f "delims=" %%G in ('dir /b /on %1VL_*.xrm-ms') do (
-    if %_WinBuild% GEQ 9200 (
-        cscript //Nologo //B %_SLMGR% /ilc %%G
-    ) else (
-        cscript //Nologo //B "%_OSPP%" /inslic:%%G
-    )
+  if %_WinBuild% GEQ 9200 (
+    cscript //Nologo //B %_SLMGR% /ilc %%G
+  ) else (
+    cscript //Nologo //B "%_OSPP%" /inslic:%%G
+  )
 )
 exit /b
-::============================================================================================================================
+::=============================================================
 :InsKey
 for /f "tokens=2 delims==" %%G in ('"wmic path %_MicrosoftProduct% where ID='%ActID%' get Name /format:list"') do (
-    echo %%G
+  echo %%G
 )
 (echo edition = "%ActID%"
 echo Set keys = CreateObject ^("Scripting.Dictionary"^)
@@ -237,13 +237,13 @@ set "key=Unknown"
 for /f %%G in ('cscript /nologo "%temp%\key.vbs"') do set key=%%G
 del /f /q "%temp%\key.vbs" >nul 2>&1
 if %key%==Unknown (
-    echo.
-    echo Could not find matching KMS Client key
-    exit /b
+  echo.
+  echo Could not find matching KMS Client key
+  exit /b
 )
 wmic path %_MicrosoftService% where version='%_ver%' call InstallProductKey ProductKey="%key%" >nul 2>&1
 exit /b
-::============================================================================================================================
+::=============================================================
 :end
 echo.
 echo.
